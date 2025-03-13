@@ -2,6 +2,28 @@
 
 A FastAPI backend service for the Frendi Chat application, deployable on Render.com.
 
+# Frendi outline
+## Chat interface
+Users can send messages to a chatbot. The chatbot has access to the user's GepZep knowledge graph.
+
+The flow:
+1. User sends a message
+2. Message is sent to Supabase Edge functions
+3. Supabase Edge function calls Render.com FastAPI /chat endpoint
+4. The /chat endpoint has LLM, that fetches information from gepZep knowledge graph if needed
+5. The FastAPI endpoint returns the response back to Edge function, which returns it to interface
+
+The LLM:
+We should try using new https://github.com/openai/openai-agents-python
+1. The agent checks "does the user question need background information from knowledge graph?"
+2. If yes, it queries getZep knowledge graph
+3. If no, it responds normally
+
+Basically, the agent has to have a set of tools it can use, and it calls them automatically. 
+
+**To understand**: you should understand how LLM tool calling works and how LLM structured responses work. For now, we don't have to do any streaming but just return the response when it's needed.
+
+
 ## Features
 
 - RESTful API with FastAPI
