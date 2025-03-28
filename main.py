@@ -1,35 +1,29 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-import os
-import uvicorn
-from app.api import router as api_router
-from app.config import settings
+from chat.router import router as chat_router
 
-# Initialize FastAPI app
 app = FastAPI(
-    title=settings.APP_NAME,
-    description=settings.APP_DESCRIPTION,
-    version=settings.APP_VERSION,
-    debug=settings.DEBUG
+    title="Frendi Chat Backend",
+    description="Backend service for Frendi Chat application with LLM and GepZep integration",
+    version="1.0.0"
 )
 
 # Configure CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Allows all origins in development
+    allow_origins=["*"],  # In production, replace with specific origins
     allow_credentials=True,
-    allow_methods=["*"],  # Allows all methods
-    allow_headers=["*"],  # Allows all headers
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
-# Add routers
-app.include_router(api_router)
+# Include routers
+app.include_router(chat_router)
 
 @app.get("/")
 async def root():
-    """Health check endpoint."""
-    return {"status": "ok", "message": f"{settings.APP_NAME} is running"}
+    return {"message": "Welcome to Frendi Chat Backend API"}
 
-if __name__ == "__main__":    
-    # Run the application
-    uvicorn.run("main:app", host="0.0.0.0", port=settings.PORT, reload=settings.DEBUG) 
+@app.get("/health")
+async def health_check():
+    return {"status": "healthy"} 
